@@ -13,7 +13,20 @@ pathToDelYaml = sys.argv[2]
 pathToValYaml = sys.argv[3]
 ns = sys.argv[4]
 branch = sys.argv[5]
-valuesDir = sys.argv[6]
+
+valuesDir = "values"
+glEnvUrl = "https://knight.livspace.com"
+glImage = "livspaceeng/python-helm"
+glCiYaml = "cicd.yaml"
+
+if 'GL_IMAGE' in os.environ:
+    glImage = os.environ['GL_IMAGE']
+if 'GL_ENV_URL' in os.environ:
+    glEnvUrl = os.environ['GL_IMAGE']
+if 'GL_CI_YAML' in os.environ:
+    glCiYaml = os.environ['GL_CI_YAML']
+if 'VALUES_DIR' in os.environ:
+    valuesDir = os.environ['VALUES_DIR']
 
 deployStages = ["uninstall","install","expose", "cleanup"]
 deployOverride = dict()
@@ -79,7 +92,7 @@ def buildDeployStage(stage,install, name,app,namespace,repo,version, valExists):
     
     env = dict()
     env['name'] = namespace
-    env['url'] = "https://knight.livspace.com"
+    env['url'] = glEnvUrl
 
     only= []
     only.append(branch)
@@ -92,7 +105,7 @@ def buildDeployStage(stage,install, name,app,namespace,repo,version, valExists):
     return dep
     
 gitlabci = OrderedDict()
-gitlabci['image'] = "livspaceeng/python-helm"
+gitlabci['image'] = glImage
 
 gitlabci['before_script'] = beforeScript(reps)
 
@@ -132,7 +145,7 @@ for apps in upYaml:
 
 
 if done1 or done2:
-    with open('cicd.yaml', 'w') as outfile:
+    with open(glCiYaml, 'w') as outfile:
         yaml.dump(gitlabci, outfile, default_flow_style=False)
 else:
     raise Exception("there is nothing to upgrade nor to delete")
