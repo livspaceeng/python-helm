@@ -13,6 +13,7 @@ pathToDelYaml = sys.argv[2]
 pathToValYaml = sys.argv[3]
 ns = sys.argv[4]
 branch = sys.argv[5]
+valuesDir = sys.argv[6]
 
 deployStages = ["uninstall","install","expose", "cleanup"]
 deployOverride = dict()
@@ -64,7 +65,7 @@ def beforeScript(repo):
 def buildDeployStage(stage,install, name,app,namespace,repo,version, valExists):
     valOverride = ""
     if valExists:
-        valOverride = " -f " + "./values/"+ name+".yaml"
+        valOverride = " -f " + "./" + valuesDir + "/"+ name+".yaml"
     
     if install:
         cmd = "helm upgrade --install --namespace " + namespace + " " + namespace + "-" + name + " " + repo + "/" + app + " --version " + version +  valOverride
