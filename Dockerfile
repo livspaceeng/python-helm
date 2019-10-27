@@ -24,6 +24,16 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
 
 RUN pip install PyYaml
 
+COPY build.py /usr/local/bin/build.py
+COPY diff.py /usr/local/bin/diff.py
+COPY helm-install.py /usr/local/bin/helm-install.py
+
+RUN chmod +x /usr/local/bin/build.py /usr/local/bin/diff.py /usr/local/bin/helm-install.py
+
+ENV CMD_BUILD="build.py"
+ENV CMD_DIFF="diff.py"
+ENV CMD_INSTALL="helm-install.py"
+
 WORKDIR /config
 
 CMD bash
