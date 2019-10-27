@@ -16,7 +16,7 @@ branch = sys.argv[5]
 
 valuesDir = "values"
 glEnvUrl = "https://knight.livspace.com"
-glImage = "livspaceeng/python-helm"
+glImage = "alpine/helm:2.11.0"
 glCiYaml = "cicd.yaml"
 
 if 'GL_IMAGE' in os.environ:
