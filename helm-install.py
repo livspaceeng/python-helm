@@ -65,7 +65,7 @@ def beforeScript(repo):
 def buildDeployStage(stage,install, name,app,namespace,repo,version, valExists):
     valOverride = ""
     if valExists:
-        valOverride = " -f " + "./" + valuesDir + "/"+ name+".yaml"
+        valOverride = " -f "  + valuesDir + "/"+ name+".yaml"
     
     if install:
         cmd = "helm upgrade --install --namespace " + namespace + " " + namespace + "-" + name + " " + repo + "/" + app + " --version " + version +  valOverride
