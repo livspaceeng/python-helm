@@ -33,6 +33,7 @@ RUN chmod +x /usr/local/bin/build.py /usr/local/bin/diff.py /usr/local/bin/helm-
 ENV CMD_BUILD="build.py"
 ENV CMD_DIFF="diff.py"
 ENV CMD_INSTALL="helm-install.py"
+ENV VALUES_DIR="values"
 
 WORKDIR /config
 
