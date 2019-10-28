@@ -28,10 +28,8 @@ if 'GL_CI_YAML' in os.environ:
 if 'VALUES_DIR' in os.environ:
     valuesDir = os.environ['VALUES_DIR']
 
-deployStages = ["uninstall","install","expose", "cleanup"]
+deployStages = []
 deployOverride = dict()
-deployOverride["expose"] = "expose"
-deployOverride["cleanup"] = "cleanup"
 
 def represent_dictionary_order(self, dict_data):
     return self.represent_mapping('tag:yaml.org,2002:map', dict_data.items())
@@ -41,9 +39,22 @@ def setup_yaml():
 
 setup_yaml() 
 
+def repoMap(repoList):
+    ret = dict()
+    for k in repoList:
+        ret[k['url']]= k
+        if 'rewrite' in k:
+            k['url'] = k['rewrite']
+    return ret
+
 try:
-    with open('repositories.yaml', 'r') as stream:
-        reps = yaml.safe_load(stream)
+    with open('pipeline-config.yml', 'r') as stream:
+        pipeConfig = yaml.safe_load(stream)
+        reps = repoMap(pipeConfig['repositories'])
+        if 'stages' in pipeConfig:
+            deployStages = pipeConfig['stages']
+        if 'apps-stage' in pipeConfig:
+            deployOverride = pipeConfig['apps-stage']
 except Exception as exc:
     print(exc)
     raise exc
@@ -71,7 +82,7 @@ def beforeScript(repo):
     script = []
     script.append("helm init -c --tiller-namespace $TILLER_NAMESPACE")
     for k,rep in repo.items():
-        script.append("helm repo add " + rep['label'] + " " + rep["url"])
+        script.append("helm repo add " + rep['label'] + " " + rep['url'])
     script.append("helm repo update")
     return script
 
